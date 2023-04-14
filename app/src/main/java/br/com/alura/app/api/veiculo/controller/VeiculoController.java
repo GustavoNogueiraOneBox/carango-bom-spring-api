@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-import java.util.List;
+import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/api/veiculo")
@@ -28,15 +28,32 @@ public class VeiculoController {
     }
 
     @GetMapping
-    public Page<VeiculoForm> listar(@PageableDefault(size = 30) Pageable pageable){
-        Page<Veiculo> veiculos = veiculoService.listarTodos(pageable);
-        return veiculos.map(Veiculo::converter);
+    public Page<Veiculo> listarTodos(@PageableDefault(size = 30) Pageable pageable){
+        return veiculoService.listarTodos(pageable);
     }
 
-    @DeleteMapping
-    public ResponseEntity<VeiculoDto> deletar(@Valid @RequestBody VeiculoDto veiculoDto){
-        veiculoService.deletarPorId(veiculoDto);
-        return ResponseEntity.ok(veiculoDto);
+    @GetMapping("detalhar/{id}")
+    public Veiculo getVeiculo(@PathVariable Long id){
+        return veiculoService.getVeiculo(id);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deletar(@PathVariable Long id){
+        veiculoService.deletarPorId(id);
+        return ResponseEntity.ok("Veiculo do id '" + id + "' deletado");
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<VeiculoForm> atualizarPorId(@PathVariable Long id, @Valid @RequestBody VeiculoForm veiculoForm){
+        veiculoService.atualizarPorId(id, veiculoForm);
+        return ResponseEntity.ok(veiculoForm);
+    }
+    @GetMapping("filtrar/{valorMin}-{valorMax}")
+    public Page<Veiculo> listarFiltradoPorValor(@PageableDefault(size = 30) Pageable pageable ,@PathVariable BigDecimal valorMin, @PathVariable BigDecimal valorMax){
+        return veiculoService.veiculosFiltradosPorValor(pageable, valorMin, valorMax);
+    }
+    @GetMapping("filtrar/{nomeDaMarca}")
+    public Page<Veiculo> listarFiltradoPorMarca(@PageableDefault(size = 30) Pageable pageable ,@PathVariable String nomeDaMarca) {
+        return veiculoService.veiculosFiltradosPorMarca(pageable, nomeDaMarca);
+    }
 }

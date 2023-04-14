@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @Service
@@ -23,8 +24,12 @@ public class VeiculoService {
     @Autowired
     private MarcaRepository marcaRepository;
 
+    public Veiculo getVeiculo(Long id) {
+        return veiculoRepository.findById(id).orElseThrow(() -> new RuntimeException("Veiculo não encontrado"));
+    }
+
     public void cadastrar(VeiculoForm veiculoForm){
-        Marca marca = marcaRepository.findById(veiculoForm.getMarca().getId()).get();
+        Marca marca = marcaRepository.findById(veiculoForm.getMarca().getId()).orElseThrow(() -> new RuntimeException("Marca não encontrada"));
         veiculoForm.setMarca(marca);
         Veiculo veiculo = new Veiculo();
         BeanUtils.copyProperties(veiculoForm, veiculo);
@@ -35,13 +40,20 @@ public class VeiculoService {
         return veiculoRepository.findAll(pageable);
     }
 
-    public void deletarPorId(VeiculoDto veiculoDto){
-        veiculoRepository.deleteById(veiculoDto.getId());
+    public void deletarPorId(Long id){
+        veiculoRepository.deleteById(id);
     }
-    public VeiculoForm get(Long id) {
-        Optional<Veiculo> obj = veiculoRepository.findById(id);
-        Veiculo veiculo = obj.orElse(new Veiculo());
 
-        return new VeiculoForm(veiculo);
+    public void atualizarPorId(Long id, VeiculoForm veiculoForm){
+        Veiculo veiculo = getVeiculo(id);
+        BeanUtils.copyProperties(veiculoForm, veiculo);
+        veiculoRepository.save(veiculo);
+    }
+
+    public Page<Veiculo> veiculosFiltradosPorValor(Pageable pageable, BigDecimal valorMin, BigDecimal valorMax){
+        return veiculoRepository.veiculosFiltradosPorValor(pageable, valorMin, valorMax);
+    }
+    public Page<Veiculo> veiculosFiltradosPorMarca(Pageable pageable, String nomeDaMarca) {
+        return veiculoRepository.veiculosFiltradosPorMarca(pageable, nomeDaMarca);
     }
 }
