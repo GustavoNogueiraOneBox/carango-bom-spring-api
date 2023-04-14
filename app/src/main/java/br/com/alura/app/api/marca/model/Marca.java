@@ -1,5 +1,6 @@
 package br.com.alura.app.api.marca.model;
 
+import br.com.alura.app.api.marca.controller.MarcaForm;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,4 +20,8 @@ public class Marca {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
+    
+    public Marca(MarcaForm marcaForm){
+        this.nome = marcaForm.getNome();
+    }
 }

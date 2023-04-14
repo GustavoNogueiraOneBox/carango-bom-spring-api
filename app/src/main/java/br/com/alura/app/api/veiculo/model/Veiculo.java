@@ -1,6 +1,7 @@
 package br.com.alura.app.api.veiculo.model;
 
 import br.com.alura.app.api.marca.model.Marca;
+import br.com.alura.app.api.veiculo.controller.VeiculoForm;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,9 +23,13 @@ public class Veiculo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Marca marca;
     private String modelo;
-    private LocalDate ano;
+    private Integer ano;
     private BigDecimal valor;
+
+    public VeiculoForm converter(){
+        return new VeiculoForm(this);
+    }
 }
