@@ -38,9 +38,8 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
 		if (tokenValido) {
 			autenticarUsuario(token);
 		}
-		
 		filterChain.doFilter(request, response);
-		
+		//ACCESSDENIEDEXCEPTION
 	}
 
 	private void autenticarUsuario(String token) {

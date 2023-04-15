@@ -22,6 +22,6 @@ public class Marca {
     private String nome;
     
     public Marca(MarcaForm marcaForm){
-        this.nome = marcaForm.getNome();
+        this.nome = marcaForm.getNome().toUpperCase();
     }
 }

@@ -29,7 +29,10 @@ public class Veiculo {
     private Integer ano;
     private BigDecimal valor;
 
-    public VeiculoForm converter(){
-        return new VeiculoForm(this);
+    public Veiculo(VeiculoForm veiculoForm){
+        this.marca = veiculoForm.getMarca();
+        this.modelo = veiculoForm.getModelo();
+        this.ano = veiculoForm.getAno();
+        this.valor = veiculoForm.getValor();
     }
 }
