@@ -18,10 +18,6 @@ public interface MarcaRepository extends JpaRepository<Marca, Long> {
 
     Marca findFirstByNome(String nome);
 
-//    @Query(value = "select nome as marca, count(marca_id) as quantidade, sum(valor) as valor_venda from marca join veiculo v on marca.id = v.marca_id group by marca_id", nativeQuery = true)
-
-    @Query(value = "SELECT nome AS marca, COUNT(marca_id) AS quantidade, SUM(valor) AS valor_venda FROM marca JOIN veiculo v ON marca.id = v.marca_id GROUP BY marca_id",
-            countQuery = "SELECT COUNT(*) FROM (SELECT nome, COUNT(marca_id) AS quantidade, SUM(valor) AS valor_venda FROM marca JOIN veiculo v ON marca.id = v.marca_id GROUP BY marca_id) AS subquery",
-            nativeQuery = true)
+    @Query(name = "preencher_relatorio_dto", nativeQuery = true)
     Page<RelatorioDto> relatorioDeVendasPorMarca(Pageable pageable);
 }

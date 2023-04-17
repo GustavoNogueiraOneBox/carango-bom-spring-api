@@ -2,6 +2,7 @@ package br.com.alura.app.api.auth;
 
 import javax.validation.Valid;
 
+import br.com.alura.app.api.usuario.controller.LoginForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,27 +17,27 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/auth")
 public class AutenticationController {
-	
-	@Autowired
-	private AuthenticationManager authManager;
-	
-	@Autowired
-	private TokenService tokenService;
-	
-	@PostMapping
-	public ResponseEntity<Object> auth(@RequestBody @Valid LoginForm form){
-		
-		UsernamePasswordAuthenticationToken dadosLogin = form.converter();
-		
-		try {
-			Authentication authentication = authManager.authenticate(dadosLogin);
-			String token = tokenService.gerarToken(authentication);
-			
-			return ResponseEntity.status(HttpStatus.OK).body(new TokenDto(token, "Bearer"));
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(form);
-		}
-		
-	}
+
+    @Autowired
+    private AuthenticationManager authManager;
+
+    @Autowired
+    private TokenService tokenService;
+
+    @PostMapping
+    public ResponseEntity<Object> auth(@RequestBody @Valid LoginForm form) {
+
+        UsernamePasswordAuthenticationToken dadosLogin = form.converter();
+
+        try {
+            Authentication authentication = authManager.authenticate(dadosLogin);
+            String token = tokenService.gerarToken(authentication);
+
+            return ResponseEntity.status(HttpStatus.OK).body(new TokenDto(token, "Bearer"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(form);
+        }
+
+    }
 
 }

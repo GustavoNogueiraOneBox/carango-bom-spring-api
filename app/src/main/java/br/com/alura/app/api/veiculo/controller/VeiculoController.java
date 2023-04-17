@@ -26,15 +26,15 @@ public class VeiculoController {
     private VeiculoService veiculoService;
 
     @Autowired
-    private ValidadorDeFormulario validaFormulario;
+    private ValidadorDeFormulario validadorDeFormulario;
 
     @PostMapping()
     @Transactional
     public ResponseEntity<Object> cadastrar(@Valid @RequestBody VeiculoForm veiculoForm, BindingResult bindingResult, UriComponentsBuilder uriComponentsBuilder) throws Exception {
-        validaFormulario.validarFormulario(bindingResult, VeiculoInvalidoException.class);
-        Veiculo veiculo = veiculoService.cadastrar(veiculoForm);
-        URI uri = uriComponentsBuilder.path("/api/veiculo/{id}").buildAndExpand(veiculo.getId()).toUri();
-        return ResponseEntity.created(uri).body(veiculo);
+        validadorDeFormulario.validarFormulario(bindingResult, VeiculoInvalidoException.class);
+        Veiculo veiculoCadastrado = veiculoService.cadastrar(veiculoForm);
+        URI uri = uriComponentsBuilder.path("/api/veiculo/{id}").buildAndExpand(veiculoCadastrado.getId()).toUri();
+        return ResponseEntity.created(uri).body(veiculoCadastrado);
     }
 
     @GetMapping()
@@ -60,9 +60,9 @@ public class VeiculoController {
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity<Veiculo> atualizarPorId(@PathVariable Long id, @Valid @RequestBody VeiculoForm veiculoForm, BindingResult bindingResult) throws Exception {
-        validaFormulario.validarFormulario(bindingResult, VeiculoInvalidoException.class);
-        Veiculo veiculo = veiculoService.atualizarPorId(id, veiculoForm);
-        return ResponseEntity.ok(veiculo);
+        validadorDeFormulario.validarFormulario(bindingResult, VeiculoInvalidoException.class);
+        Veiculo veiculoAtualizado = veiculoService.atualizarPorId(id, veiculoForm);
+        return ResponseEntity.ok(veiculoAtualizado);
     }
 
     @GetMapping("filtrarValor/{valorMin}-{valorMax}")

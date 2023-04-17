@@ -1,6 +1,0 @@
-
-N	java:S106D"9Replace this use of System.out or System.err by a logger.(ΰιψ
-L
-java:S6437D"6Revoke and change this password, as it is compromised.(ΰιψ
-f
-java:S1128"KRemove this unused import 'org.springframework.context.annotation.Profile'.(Ψέ¥έψÿÿÿÿ

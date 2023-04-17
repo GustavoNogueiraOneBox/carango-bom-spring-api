@@ -8,7 +8,7 @@ public class ValidadorDeFormulario {
 
     public void validarFormulario(BindingResult bindingResult, Class<? extends Exception> exceptionType) throws Exception {
         if (bindingResult.hasErrors()) {
-            throw exceptionType.getConstructor(String.class).newInstance("Formulário inválido");
+            throw exceptionType.getConstructor(String.class).newInstance("Formulário inválido, verifique se os campos estão corretos!");
             }
         }
     }
