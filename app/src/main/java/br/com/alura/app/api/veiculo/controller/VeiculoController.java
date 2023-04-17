@@ -2,8 +2,9 @@ package br.com.alura.app.api.veiculo.controller;
 
 import br.com.alura.app.api.veiculo.model.Veiculo;
 import br.com.alura.app.api.veiculo.service.VeiculoService;
+import br.com.alura.app.exception.FormularioInvalidoException;
 import br.com.alura.app.exception.VeiculoInvalidoException;
-import br.com.alura.app.util.ValidadorDeFormulario;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,13 +26,12 @@ public class VeiculoController {
     @Autowired
     private VeiculoService veiculoService;
 
-    @Autowired
-    private ValidadorDeFormulario validadorDeFormulario;
-
     @PostMapping()
     @Transactional
     public ResponseEntity<Object> cadastrar(@Valid @RequestBody VeiculoForm veiculoForm, BindingResult bindingResult, UriComponentsBuilder uriComponentsBuilder) throws Exception {
-        validadorDeFormulario.validarFormulario(bindingResult, VeiculoInvalidoException.class);
+        if(bindingResult.hasErrors()){
+            throw new FormularioInvalidoException("Formulário inválido, verifique se os campos estão corretos");
+        }
         Veiculo veiculoCadastrado = veiculoService.cadastrar(veiculoForm);
         URI uri = uriComponentsBuilder.path("/api/veiculo/{id}").buildAndExpand(veiculoCadastrado.getId()).toUri();
         return ResponseEntity.created(uri).body(veiculoCadastrado);
@@ -43,13 +43,13 @@ public class VeiculoController {
     }
 
     @GetMapping("/{id}")
-    public Veiculo getVeiculo(@PathVariable Long id) throws VeiculoInvalidoException {
+    public Veiculo getVeiculo(@PathVariable Long id) throws NotFoundException {
         return veiculoService.getVeiculo(id);
     }
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity<?> deletar(@PathVariable Long id) throws VeiculoInvalidoException {
+    public ResponseEntity<?> deletar(@PathVariable Long id) throws VeiculoInvalidoException, NotFoundException {
         if (id == null || id == 0) {
             throw new VeiculoInvalidoException("ID inválido");
         }
@@ -60,7 +60,9 @@ public class VeiculoController {
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity<Veiculo> atualizarPorId(@PathVariable Long id, @Valid @RequestBody VeiculoForm veiculoForm, BindingResult bindingResult) throws Exception {
-        validadorDeFormulario.validarFormulario(bindingResult, VeiculoInvalidoException.class);
+        if(bindingResult.hasErrors()){
+            throw new FormularioInvalidoException("Formulário inválido, verifique se os campos estão corretos");
+        }
         Veiculo veiculoAtualizado = veiculoService.atualizarPorId(id, veiculoForm);
         return ResponseEntity.ok(veiculoAtualizado);
     }

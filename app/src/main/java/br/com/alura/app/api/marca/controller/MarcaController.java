@@ -2,8 +2,9 @@ package br.com.alura.app.api.marca.controller;
 
 import br.com.alura.app.api.marca.model.Marca;
 import br.com.alura.app.api.marca.service.MarcaService;
+import br.com.alura.app.exception.FormularioInvalidoException;
 import br.com.alura.app.exception.MarcaInvalidaException;
-import br.com.alura.app.util.ValidadorDeFormulario;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,13 +25,12 @@ public class MarcaController {
     @Autowired
     private MarcaService marcaService;
 
-    @Autowired
-    private ValidadorDeFormulario validadorDeFormulario;
-
     @PostMapping()
     @Transactional
     public ResponseEntity<Object> cadastrar(@Valid @RequestBody MarcaForm marcaForm, BindingResult bindingResult, UriComponentsBuilder uriComponentsBuilder) throws Exception {
-        validadorDeFormulario.validarFormulario(bindingResult, MarcaInvalidaException.class);
+        if(bindingResult.hasErrors()){
+            throw new FormularioInvalidoException("Formulário inválido, verifique se os campos estão corretos");
+        }
         Marca marcaCadastrada = marcaService.cadastrar(marcaForm);
         URI uri = uriComponentsBuilder.path("/api/marca/{id}").buildAndExpand(marcaCadastrada.getId()).toUri();
         return ResponseEntity.created(uri).body(marcaCadastrada);
@@ -42,7 +42,7 @@ public class MarcaController {
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity<?> deletar(@PathVariable Long id) throws MarcaInvalidaException {
+    public ResponseEntity<?> deletar(@PathVariable Long id) throws MarcaInvalidaException, NotFoundException {
         if(id == null || id == 0){
             throw new MarcaInvalidaException("ID inválido");
         }
@@ -53,7 +53,9 @@ public class MarcaController {
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity<Marca> atualizarPorId(@PathVariable Long id, @Valid @RequestBody MarcaForm marcaForm, BindingResult bindingResult) throws Exception {
-        validadorDeFormulario.validarFormulario(bindingResult, MarcaInvalidaException.class);
+        if(bindingResult.hasErrors()){
+            throw new FormularioInvalidoException("Formulário inválido, verifique se os campos estão corretos");
+        }
         Marca marcaAtualizada = marcaService.atualizarPorId(id, marcaForm);
         return ResponseEntity.ok(marcaAtualizada);
     }

@@ -7,6 +7,7 @@ import br.com.alura.app.api.veiculo.model.Veiculo;
 import br.com.alura.app.api.veiculo.repository.VeiculoRepository;
 import br.com.alura.app.exception.MarcaInvalidaException;
 import br.com.alura.app.exception.VeiculoInvalidoException;
+import javassist.NotFoundException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,12 +25,12 @@ public class VeiculoService {
     @Autowired
     private MarcaRepository marcaRepository;
 
-    public Veiculo getVeiculo(Long id) throws VeiculoInvalidoException {
-        return veiculoRepository.findById(id).orElseThrow(() -> new VeiculoInvalidoException("Veiculo de id: " + id + " não encontrado"));
+    public Veiculo getVeiculo(Long id) throws NotFoundException {
+        return veiculoRepository.findById(id).orElseThrow(() -> new NotFoundException("Veiculo de id " + id + " não encontrado"));
     }
 
-    public Veiculo cadastrar(VeiculoForm veiculoForm) throws MarcaInvalidaException {
-        Marca marca = marcaRepository.findById(veiculoForm.getMarca().getId()).orElseThrow(() -> new MarcaInvalidaException("Marca de id: " + veiculoForm.getMarca().getId() + " não encontrada"));
+    public Veiculo cadastrar(VeiculoForm veiculoForm) throws NotFoundException {
+        Marca marca = marcaRepository.findById(veiculoForm.getMarca().getId()).orElseThrow(() -> new NotFoundException("Marca de id " + veiculoForm.getMarca().getId() + " não encontrada"));
         veiculoForm.setMarca(marca);
         return veiculoRepository.save(new Veiculo(veiculoForm));
     }
@@ -38,12 +39,12 @@ public class VeiculoService {
         return veiculoRepository.findAll(pageable);
     }
 
-    public void deletarPorId(Long id) throws VeiculoInvalidoException {
+    public void deletarPorId(Long id) throws NotFoundException {
         Veiculo veiculo = getVeiculo(id);
         veiculoRepository.delete(veiculo);
     }
 
-    public Veiculo atualizarPorId(Long id, VeiculoForm veiculoForm) throws VeiculoInvalidoException {
+    public Veiculo atualizarPorId(Long id, VeiculoForm veiculoForm) throws NotFoundException {
         Veiculo veiculo = getVeiculo(id);
         BeanUtils.copyProperties(veiculoForm, veiculo);
         return veiculoRepository.save(veiculo);

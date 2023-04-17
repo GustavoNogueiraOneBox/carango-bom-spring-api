@@ -2,7 +2,6 @@ package br.com.alura.app.api.auth;
 
 import javax.validation.Valid;
 
-import br.com.alura.app.api.usuario.controller.LoginForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

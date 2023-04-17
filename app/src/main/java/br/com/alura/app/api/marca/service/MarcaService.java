@@ -5,6 +5,7 @@ import br.com.alura.app.api.marca.controller.RelatorioDto;
 import br.com.alura.app.api.marca.model.Marca;
 import br.com.alura.app.api.marca.repository.MarcaRepository;
 import br.com.alura.app.exception.MarcaInvalidaException;
+import javassist.NotFoundException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,16 +30,16 @@ public class MarcaService {
         return marcaRepository.findAll(pageable);
     }
 
-    public void deletarPorId(Long id) throws MarcaInvalidaException {
+    public void deletarPorId(Long id) throws NotFoundException {
         Marca marca = getMarca(id);
         marcaRepository.delete(marca);
     }
 
-    public Marca getMarca(Long id) throws MarcaInvalidaException {
-        return marcaRepository.findById(id).orElseThrow(() -> new MarcaInvalidaException("Marca de id: " + id + " não encontrada"));
+    public Marca getMarca(Long id) throws NotFoundException {
+        return marcaRepository.findById(id).orElseThrow(() -> new NotFoundException("Marca de id " + id + " não encontrada"));
     }
 
-    public Marca atualizarPorId(Long id, MarcaForm marcaForm) throws MarcaInvalidaException {
+    public Marca atualizarPorId(Long id, MarcaForm marcaForm) throws NotFoundException {
         Marca marca = getMarca(id);
         BeanUtils.copyProperties(marcaForm, marca);
         return marcaRepository.save(marca);
