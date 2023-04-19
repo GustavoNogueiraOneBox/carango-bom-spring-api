@@ -70,20 +70,7 @@ public class UsuarioController {
 	public ResponseEntity<Object> cadastro(@RequestBody @Valid UsuarioForm usuarioForm, 
 			BindingResult result, 
 			UriComponentsBuilder uriBuilder) {
-		
-		/** Exemplo de requisição
-		   {
-			    "login":"alura1234",
-			    "senha":"alura1234",
-			    "perfis":[{
-			        "id":1,
-			        "nome":"Administrador"
-			    },{
-			        "id":2,
-			        "nome":"Vendedor"
-			    }]
-			}
-		 */
+
 		
 		logger.info(usuarioForm.toString());
 

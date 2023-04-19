@@ -39,8 +39,11 @@ public class MarcaService {
         return marcaRepository.findById(id).orElseThrow(() -> new NotFoundException("Marca de id " + id + " não encontrada"));
     }
 
-    public Marca atualizarPorId(Long id, MarcaForm marcaForm) throws NotFoundException {
+    public Marca atualizarPorId(Long id, MarcaForm marcaForm) throws NotFoundException, MarcaInvalidaException {
         Marca marca = getMarca(id);
+        if(marca != null && marca.getNome().toUpperCase().equals(marcaForm.getNome().toUpperCase())){
+            throw new MarcaInvalidaException("Marca já cadastrada no banco");
+        }
         BeanUtils.copyProperties(marcaForm, marca);
         return marcaRepository.save(marca);
     }
